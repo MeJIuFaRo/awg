@@ -40,4 +40,14 @@ services:
       - ./caddy/config/:/config/
       - ./caddy/Caddyfile:/etc/caddy/Caddyfile
 #   command: caddy reverse-proxy --from yourdamain.ru --to awg:51821
+    entrypoint: |
+      sh -c "cat > /etc/caddy/Caddyfile << 'EOF'
+      https:// {
+	        reverse_proxy awg:51821
+	        tls internal {
+		          on_demand
+	        }
+     }
+      EOF
+      caddy run --config /etc/caddy/Caddyfile"
     container_name: caddy-awg
