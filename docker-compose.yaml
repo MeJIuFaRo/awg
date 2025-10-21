@@ -37,5 +37,5 @@ services:
             - ./caddy/data/:/data/
             - ./caddy/config/:/config/
             - ./caddy/Caddyfile:/etc/caddy/Caddyfile
-       # command: caddy reverse-proxy --from austral.lmgtfy.ru --to awg:51821
+       # command: caddy reverse-proxy --from yourdamain.ru --to awg:51821
         container_name: caddy-awg
