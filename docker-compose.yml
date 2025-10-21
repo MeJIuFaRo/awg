@@ -38,7 +38,7 @@ services:
     volumes:
       - ./caddy/data/:/data/
       - ./caddy/config/:/config/
-      - ./caddy/Caddyfile:/etc/caddy/Caddyfile
+      #- ./caddy/Caddyfile:/etc/caddy/Caddyfile
 #   command: caddy reverse-proxy --from yourdamain.ru --to awg:51821
     entrypoint: |
       sh -c "cat > /etc/caddy/Caddyfile << 'EOF'
