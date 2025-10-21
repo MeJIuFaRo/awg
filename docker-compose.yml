@@ -11,11 +11,11 @@ services:
       - SYS_MODULE
       - NET_ADMIN
     expose:
-      - 51821:51821/tcp
+      - 51821
     ports:
       - 555:555/udp
     volumes:
-      - ./amnezia-wg-easy:/etc/wireguard
+      - awg-data:/etc/wireguard
     environment:
       - WG_PORT=555
       - PORT=51821
@@ -26,8 +26,6 @@ services:
       - WG_ALLOWED_IPS=0.0.0.0/0
       - WG_ENABLE_EXPIRES_TIME=true
       - UI_TRAFFIC_STATS=true
-#     - WG_PRE_UP=sed -i 's/AllowedIPs = 10.25.13.2\/32$/AllowedIPs = 10.25.13.2\/32, 192.168.88.0\/24, 172.18.20.2\/30/' /etc/wireguard/wg0.conf
-#     - WG_POST_UP=sed -i 's/AllowedIPs = 10.25.13.2\/32$/AllowedIPs = 10.25.13.2\/32, 192.168.88.0\/24, 172.18.20.2\/30/' /etc/wireguard/wg0.conf && wg show
     container_name: awg
 
   caddy:
@@ -36,18 +34,23 @@ services:
       - 80:80
       - 443:443
     volumes:
-      - ./caddy/data/:/data/
-      - ./caddy/config/:/config/
-      #- ./caddy/Caddyfile:/etc/caddy/Caddyfile
-#   command: caddy reverse-proxy --from yourdamain.ru --to awg:51821
+      - caddy-data:/data
+      - caddy-config:/config
     entrypoint: |
       sh -c "cat > /etc/caddy/Caddyfile << 'EOF'
+      {
+          admin off
+      }
+      
       https:// {
-	        reverse_proxy awg:51821
-	        tls internal {
-		          on_demand
-	        }
-     }
+          reverse_proxy awg:51821
+          tls internal
+      }
       EOF
       caddy run --config /etc/caddy/Caddyfile"
     container_name: caddy-awg
+
+volumes:
+  awg-data:
+  caddy-config:
+  caddy-data:
