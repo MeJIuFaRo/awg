@@ -1,41 +1,43 @@
 services:
-      awg:
-        image: mejiufaro/awgrouting
-        restart: unless-stopped
-        devices:
-            - /dev/net/tun:/dev/net/tun
-        sysctls:
-            - net.ipv4.ip_forward=1
-            - net.ipv4.conf.all.src_valid_mark=1
-        cap_add:
-            - SYS_MODULE
-            - NET_ADMIN
-        expose:
-            - 51821:51821/tcp
-        ports:
-            - 555:555/udp
-        volumes:
-            - ./amnezia-wg-easy:/etc/wireguard
-        environment:
-            - WG_PORT=555
-            - PORT=51821
-            - PASSWORD_HASH=$$2a$$12$$jBwGVbHxPZikyffXhuFXGeHrITokZmVrB1wW86Uhtmf6S1sShdX92
-            - WG_HOST=${IPADDR}
-            - LANG=ru
-            - WG_DEFAULT_ADDRESS=10.25.13.x
-            - WG_ALLOWED_IPS=0.0.0.0/0
-            - WG_ENABLE_EXPIRES_TIME=true
-            - UI_TRAFFIC_STATS=true
-#            - WG_PRE_UP=sed -i 's/AllowedIPs = 10.25.13.2\/32$/AllowedIPs = 10.25.13.2\/32, 192.168.88.0\/24, 172.18.20.2\/30/' /etc/wireguard/wg0.conf
-#            - WG_POST_UP=sed -i 's/AllowedIPs = 10.25.13.2\/32$/AllowedIPs = 10.25.13.2\/32, 192.168.88.0\/24, 172.18.20.2\/30/' /etc/wireguard/wg0.conf && wg show #&& wg-quick down wg0  #&& sleep 2 && wg-qu>#        container_name: awg
-      caddy:
-        image: caddy
-        ports:
-            - 80:80
-            - 443:443
-        volumes:
-            - ./caddy/data/:/data/
-            - ./caddy/config/:/config/
-            - ./caddy/Caddyfile:/etc/caddy/Caddyfile
-       # command: caddy reverse-proxy --from yourdamain.ru --to awg:51821
-        container_name: caddy-awg
+  awg:
+    image: mejiufaro/awgrouting
+    restart: unless-stopped
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    sysctls:
+      - net.ipv4.ip_forward=1
+      - net.ipv4.conf.all.src_valid_mark=1
+    cap_add:
+      - SYS_MODULE
+      - NET_ADMIN
+    expose:
+      - 51821:51821/tcp
+    ports:
+      - 555:555/udp
+    volumes:
+      - ./amnezia-wg-easy:/etc/wireguard
+    environment:
+      - WG_PORT=555
+      - PORT=51821
+      - PASSWORD_HASH=$$2a$$12$$jBwGVbHxPZikyffXhuFXGeHrITokZmVrB1wW86Uhtmf6S1sShdX92
+      - WG_HOST=${IPADDR}
+      - LANG=ru
+      - WG_DEFAULT_ADDRESS=10.25.13.x
+      - WG_ALLOWED_IPS=0.0.0.0/0
+      - WG_ENABLE_EXPIRES_TIME=true
+      - UI_TRAFFIC_STATS=true
+#     - WG_PRE_UP=sed -i 's/AllowedIPs = 10.25.13.2\/32$/AllowedIPs = 10.25.13.2\/32, 192.168.88.0\/24, 172.18.20.2\/30/' /etc/wireguard/wg0.conf
+#     - WG_POST_UP=sed -i 's/AllowedIPs = 10.25.13.2\/32$/AllowedIPs = 10.25.13.2\/32, 192.168.88.0\/24, 172.18.20.2\/30/' /etc/wireguard/wg0.conf && wg show
+    container_name: awg
+
+  caddy:
+    image: caddy
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./caddy/data/:/data/
+      - ./caddy/config/:/config/
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile
+#   command: caddy reverse-proxy --from yourdamain.ru --to awg:51821
+    container_name: caddy-awg
