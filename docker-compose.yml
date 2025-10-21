@@ -44,7 +44,9 @@ services:
       
       https:// {
           reverse_proxy awg:51821
-          tls internal
+          tls internal {
+              on_demand
+              }
       }
       EOF
       caddy run --config /etc/caddy/Caddyfile"
